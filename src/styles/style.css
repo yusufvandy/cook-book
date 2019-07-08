@@ -1,0 +1,10 @@
+input{
+    padding: 10px;
+    outline: none;
+    font-size: 14px;
+}
+label{
+    color: #555;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
