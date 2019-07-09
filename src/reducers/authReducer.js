@@ -1,10 +1,12 @@
 const initState = {
-    username: 'affandi',
-    password: 'password123'
-}
+  user: {
+    username: "affandi",
+    password: "password123"
+  }
+};
 
-const authReducer = ( state = initState, action ) => {
-    return state
-}
+const authReducer = (state = initState, action) => {
+  return state;
+};
 
-export default authReducer
+export default authReducer;

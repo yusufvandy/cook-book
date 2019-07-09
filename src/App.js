@@ -1,18 +1,17 @@
-import React from 'react';
-import Navbar from './components/Navbar'
-import LoginCard from './components/LoginCard'
-import {useSelector} from 'react-redux'
+import React from "react";
+import Navbar from "./components/Navbar";
+import LoginCard from "./components/LoginCard";
+import { useSelector } from "react-redux";
 
 const App = () => {
-  const username = useSelector(state => state.auth.username)
+  const user = useSelector(state => state.auth.user);
+
   return (
     <div className="App">
-      {username}
       <Navbar />
-      <LoginCard />
+      <LoginCard user={user} />
     </div>
   );
-}
+};
 
 export default App;
-
