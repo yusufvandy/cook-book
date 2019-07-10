@@ -16,13 +16,13 @@ const SCardCustom = styled(SCard)`
 `
 
 
-const LoginCard = () => {
+const RegisterCard = () => {
     return (
         <React.Fragment>
             <SContainer>
                 <SCardCustom>
                     <STitle>
-                        Please Login
+                        Register
                     </STitle>
                     <form action="">
                         <SFormGroup>
@@ -30,10 +30,18 @@ const LoginCard = () => {
                             <input type="text"/>
                         </SFormGroup>
                         <SFormGroup>
-                            <label htmlFor="">Password</label>
-                            <input type="password" />
+                            <label htmlFor="">Email</label>
+                            <input type="text"/>
                         </SFormGroup>
-                        <SActionButton type="submit">Login</SActionButton>
+                        <SFormGroup>
+                            <label htmlFor="">New Password</label>
+                            <input type="password"/>
+                        </SFormGroup>
+                        <SFormGroup>
+                            <label htmlFor="">Retype Password</label>
+                            <input type="password"/>
+                        </SFormGroup>
+                        <SActionButton type="submit">Register</SActionButton>
                     </form>
                 </SCardCustom>
             </SContainer>
@@ -41,4 +49,4 @@ const LoginCard = () => {
     );
 }
  
-export default LoginCard;
+export default RegisterCard;

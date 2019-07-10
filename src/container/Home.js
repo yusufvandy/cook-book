@@ -1,10 +1,9 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
 
 import Navbar from "../components/Navbar";
-import LoginCard from "../components/LoginCard";
-import {createUser} from '../actions/userAction'
+import Signup from "./Signup"
+import Signin from "./Signin"
 
 
 
@@ -14,9 +13,6 @@ const Home = () => {
       {menu: 'Sign In', url: '/signin'},
       {menu: 'Sign Up', url: '/signup'},
   ]
-  const user = useSelector(state => state.auth.user);
-  const dispatch = useDispatch()
-
   return (
     <Router>
         <React.Fragment>
@@ -24,7 +20,8 @@ const Home = () => {
           <Switch>
             <Route path='/' exact component={home}/>
             <Route path='/recipes' component={recipes}/>
-            <Route path='/signup' component={signup}/>
+            <Route path='/signin' component={Signin}/>
+            <Route path='/signup' component={Signup}/>
             {/* <LoginCard user={user} /> */}
             {/* <button onClick={() => dispatch(createUser({username: 'test2', password: 'test2'}))}>SET</button> */}
           </Switch>
@@ -39,10 +36,6 @@ const home = () => {
 
 const recipes = () => {
   return<h1>This is recipes page</h1>
-}
-
-const signup = () => {
-  return<h1>This is signup page</h1>
 }
 
 
