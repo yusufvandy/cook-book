@@ -16,7 +16,7 @@ const SCardCustom = styled(SCard)`
 `
 
 
-const LoginCard = (props) => {
+const LoginCard = () => {
     return (
         <React.Fragment>
             <SContainer>
@@ -27,11 +27,11 @@ const LoginCard = (props) => {
                     <form action="">
                         <SFormGroup>
                             <label htmlFor="">Username</label>
-                            <input type="text" defaultValue={props.user.username}/>
+                            <input type="text"/>
                         </SFormGroup>
                         <SFormGroup>
                             <label htmlFor="">Password</label>
-                            <input type="password" defaultValue={props.user.password}/>
+                            <input type="password" />
                         </SFormGroup>
                         <SActionButton type="submit">Login</SActionButton>
                     </form>

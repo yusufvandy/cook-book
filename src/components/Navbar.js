@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import {Link} from 'react-router-dom'
 import { SContainer } from '../styles/global'
 
 const SButton = styled.button`
@@ -8,9 +9,10 @@ const SButton = styled.button`
     padding: 10px;
     cursor: pointer;
 `
-const SBrand = styled.div`
+const SBrand = styled(Link)`
     font-size: 18px;
     font-weight: bold;
+    color: #fff;
 `
 const SNavbar = styled.div`
     background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
@@ -24,17 +26,20 @@ const SContainerCustom = styled(SContainer)`
     align-items: center;
 `
 
-const Navbar = () => {
+const Navbar = (props) => {
     return (
         <React.Fragment>
             <SNavbar>
                 <SContainerCustom>
-                    <SBrand>
+                    <SBrand to="/">
                         My Cook App
                     </SBrand>
-                    <SButton>
-                        Logout
-                    </SButton>
+                    {(props.menus.length > 0) 
+                        ?   <div>{props.menus.map(menu => 
+                                <Link key={menu.menu} style={{color: '#fff', marginLeft: 15}} to={menu.url}>{menu.menu}</Link>
+                            )}</div>
+                        :   <SButton>Logout</SButton>
+                    }
                 </SContainerCustom>
             </SNavbar>
         </React.Fragment>
