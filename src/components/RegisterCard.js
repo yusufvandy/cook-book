@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import {useState, useEffect} from 'react'
-import { useSelector, useDispatch } from "react-redux";
+import {useState} from 'react'
+import { useDispatch } from "react-redux";
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
 import {createUser} from '../actions/userAction'
@@ -21,7 +21,6 @@ const SCardCustom = styled(SCard)`
 
 
 const RegisterCard = () => {
-    // const user = useSelector(state => state.auth.user);
     const dispatch = useDispatch();
 
     const [user, setUser] = useState({
@@ -38,6 +37,19 @@ const RegisterCard = () => {
             [name] : value
         })
     }
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        // prevent retypePassword props
+        const deleteProps = (state, props) => {
+            let {[props]: deleted, ...newState} = state;
+            return newState;
+        }
+        let finalUser = deleteProps(user, 'retypePassword')
+
+        const {username, email, password} = finalUser
+        dispatch(createUser({username, email, password}))
+    }
     
     return (
         <React.Fragment>
@@ -46,7 +58,7 @@ const RegisterCard = () => {
                     <STitle>
                         Register
                     </STitle>
-                    <form action="">
+                    <form action="" onSubmit={(e) => onSubmitHandler(e)}>
                         <SFormGroup>
                             <label htmlFor="">Username</label>
                             <input type="text" name="username" onChange={(e) => inputHandler(e)}/>
