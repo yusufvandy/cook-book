@@ -1,9 +1,4 @@
-const initState = {
-    username: 'gondi',
-    password: 'gw'
-}
-
-const userReducer = ( state = initState, action ) => {
+const userReducer = ( state = null, action ) => {
     switch (action.type) {
         case 'CREATE_USER':
             console.log("created", action.user)

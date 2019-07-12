@@ -1,11 +1,4 @@
-const initState = {
-  user: {
-    username: "affandi",
-    password: "password123"
-  }
-};
-
-const authReducer = (state = initState, action) => {
+const authReducer = (state = null, action) => {
   return state;
 };
 
