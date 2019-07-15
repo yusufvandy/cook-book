@@ -33,7 +33,7 @@ const rrfProps = {
     fbConfig,
     config: rrfConfig,
     dispatch: store.dispatch,
-    // createFirestoreInstance
+    createFirestoreInstance
   }
 
 const App = () => (
