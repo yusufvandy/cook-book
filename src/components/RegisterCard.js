@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {useState} from 'react'
 import { useDispatch } from "react-redux";
+import {withRouter} from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
 import {createUser} from '../actions/userAction'
@@ -20,7 +21,7 @@ const SCardCustom = styled(SCard)`
 `
 
 
-const RegisterCard = () => {
+const RegisterCard = (props) => {
     const dispatch = useDispatch();
 
     const [user, setUser] = useState({
@@ -45,9 +46,13 @@ const RegisterCard = () => {
             let {[props]: deleted, ...newState} = state;
             return newState;
         }
-        let finalUser = deleteProps(user, 'retypePassword')
+        let newUser = deleteProps(user, 'retypePassword')
 
-        const {username, email, password} = finalUser
+        // i want to check the username is available or not on database
+        // return error if double username
+        // return to dispatch and display 'account has been created' and then redirect to home after 2 seconds
+
+        const {username, email, password} = newUser
         dispatch(createUser({username, email, password}))
     }
     
@@ -85,4 +90,4 @@ const RegisterCard = () => {
     );
 }
  
-export default RegisterCard;
+export default withRouter(RegisterCard);
