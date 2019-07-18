@@ -23,7 +23,7 @@ const SCardCustom = styled(SCard)`
     margin-top: 50px;
 `
 
-const RegisterCard = ({props, users, firestore}) => {
+const RegisterCard = ({props, users, firestore, recipes}) => {
     const dispatch = useDispatch();
     const [user, setUser] = useState({
         username: '',
@@ -44,7 +44,8 @@ const RegisterCard = ({props, users, firestore}) => {
     useEffect(
         () => {
             const getUser = async () => {
-                await firestore.get('users')
+                await firestore.onSnapshot('users')
+                await firestore.get({collection:'recipes', doc: 'myfood'})
             }
             getUser();
         }, [firestore]
@@ -60,7 +61,7 @@ const RegisterCard = ({props, users, firestore}) => {
         dispatch(createUser({username, email, password}))
     }
 
-    console.log(users)
+    console.log(recipes)
 
     const usersList = !isLoaded(users)
     ? 'Loading'
@@ -68,6 +69,15 @@ const RegisterCard = ({props, users, firestore}) => {
       ? 'Todo list is empty'
       : Object.keys(users).map((key, id) => (
           <div key={key} id={id}>{users[key].username}</div>
+        ))
+
+
+    const recipesList = !isLoaded(users)
+    ? 'Loading'
+    : isEmpty(recipes)
+      ? 'Todo list is empty'
+      : Object.keys(recipes).map((recipe) => (
+          <div key={recipe}>{recipes[recipe].test}</div>
         ))
     
     return (
@@ -99,6 +109,8 @@ const RegisterCard = ({props, users, firestore}) => {
                         <SActionButton type="submit">Register</SActionButton>
                     </form>
                     {usersList}
+                    <h1>Recipes</h1>
+                    {recipesList}
                 </SCardCustom>
             </SContainer>
         </React.Fragment>
@@ -116,6 +128,7 @@ export default compose(
     withRouter,
     withFirestore,
     connect(state => ({
-        users: state.firestore.ordered.users
+        users: state.firestore.ordered.users,
+        recipes: state.firestore.ordered.recipes
     }))
   )(RegisterCard)
