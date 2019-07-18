@@ -46,24 +46,17 @@ const RegisterCard = ({props, users, firestore}) => {
             const getUser = async () => {
                 await firestore.get('users')
             }
-            getUser()
+            getUser();
         }, [firestore]
     )
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        // prevent retypePassword props
-        const deleteProps = (state, props) => {
-            let {[props]: deleted, ...newState} = state;
-            return newState;
-        }
-        let newUser = deleteProps(user, 'retypePassword')
-
         // i want to check the username is available or not on database
         // return error if double username
         // return to dispatch and display 'account has been created' and then redirect to home after 2 seconds
 
-        const {username, email, password} = newUser
+        const {username, email, password} = user
         dispatch(createUser({username, email, password}))
     }
 
