@@ -1,6 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { useState } from 'react'
+import { useDispatch } from "react-redux";
+import { useFirebase } from 'react-redux-firebase'
+
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
+import {signIn} from '../actions/authAction'
 
 const STitle = styled.h1`
     font-size: 20px;
@@ -16,7 +21,29 @@ const SCardCustom = styled(SCard)`
 `
 
 
-const LoginCard = () => {
+const LoginCard = (props) => {
+    const dispatch = useDispatch()
+    const [user, setUser] = useState({
+        email: '',
+        password: ''
+    })
+    
+    const inputHandler = (e) => {
+        const {value, name} = e.target;
+        setUser({
+            ...user,
+            [name] : value
+        })
+    }
+
+    const firebase = useFirebase();
+
+    const onSubmitHandler = (e) => {
+        e.preventDefault();
+        console.log(user)
+        dispatch(signIn(user, {firebase}))
+    }
+
     return (
         <React.Fragment>
             <SContainer>
@@ -24,14 +51,14 @@ const LoginCard = () => {
                     <STitle>
                         Please Login
                     </STitle>
-                    <form action="">
+                    <form action="" onSubmit={onSubmitHandler}>
                         <SFormGroup>
-                            <label htmlFor="">Username</label>
-                            <input type="text"/>
+                            <label htmlFor="">Email</label>
+                            <input name="email" onChange={(e) => inputHandler(e)} type="email"/>
                         </SFormGroup>
                         <SFormGroup>
                             <label htmlFor="">Password</label>
-                            <input type="password" />
+                            <input name="password" onChange={(e) => inputHandler(e)} type="password" />
                         </SFormGroup>
                         <SActionButton type="submit">Login</SActionButton>
                     </form>

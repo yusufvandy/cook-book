@@ -1,5 +1,5 @@
 export const createUser = (user) => {
-    return (dispatch, getState, {getFirebase, getFirestore}) => {
+    return (dispatch, {getFirestore}) => {
         const firestore = getFirestore();
         firestore.collection('users').add({
             ...user

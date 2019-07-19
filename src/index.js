@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import Home from './container/Home';
 import * as serviceWorker from './serviceWorker';
-import {Provider} from 'react-redux'
+import { Provider } from 'react-redux'
 
 import firebase from 'firebase/app'
-import {createStore, applyMiddleware, compose} from 'redux'
+import 'firebase/auth'
+import 'firebase/database'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
-import {createFirestoreInstance, getFirestore} from 'redux-firestore'
-import {ReactReduxFirebaseProvider, getFirebase} from 'react-redux-firebase'
+import { createFirestoreInstance, getFirestore, reduxFirestore } from 'redux-firestore'
+import { ReactReduxFirebaseProvider, getFirebase } from 'react-redux-firebase'
 import fbConfig from './config/fbConfig'
 
 import rootReducer from './reducers/rootReducer'
@@ -20,8 +22,7 @@ const store = createStore(
     rootReducer,
     composeEnhancers(
         applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore })),
-        // reduxFirestore(fbConfig),
-        // reactReduxFirebase(fbConfig)
+        reduxFirestore(fbConfig)
     )
 )
 const rrfConfig = {
@@ -33,7 +34,7 @@ const rrfProps = {
     fbConfig,
     config: rrfConfig,
     dispatch: store.dispatch,
-    // createFirestoreInstance
+    createFirestoreInstance
   }
 
 const App = () => (

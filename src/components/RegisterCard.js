@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import {useState} from 'react'
-import { useDispatch } from "react-redux";
-import {withRouter} from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { compose } from 'redux'
+import { useDispatch, connect } from "react-redux";
+// import { firestoreConnect } from "react-redux-firebase";
+import { withFirestore, isLoaded, isEmpty } from 'react-redux-firebase'
+import { withRouter } from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
 import {createUser} from '../actions/userAction'
@@ -20,10 +23,8 @@ const SCardCustom = styled(SCard)`
     margin-top: 50px;
 `
 
-
-const RegisterCard = (props) => {
+const RegisterCard = ({props, users, firestore, recipes}) => {
     const dispatch = useDispatch();
-
     const [user, setUser] = useState({
         username: '',
         email: '',
@@ -38,23 +39,46 @@ const RegisterCard = (props) => {
             [name] : value
         })
     }
+    
+
+    useEffect(
+        () => {
+            const getUser = async () => {
+                await firestore.onSnapshot('users')
+                await firestore.get({collection:'recipes', doc: 'myfood'})
+            }
+            getUser();
+        }, [firestore]
+    )
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
-        // prevent retypePassword props
-        const deleteProps = (state, props) => {
-            let {[props]: deleted, ...newState} = state;
-            return newState;
-        }
-        let newUser = deleteProps(user, 'retypePassword')
-
         // i want to check the username is available or not on database
         // return error if double username
         // return to dispatch and display 'account has been created' and then redirect to home after 2 seconds
 
-        const {username, email, password} = newUser
+        const {username, email, password} = user
         dispatch(createUser({username, email, password}))
     }
+
+    console.log(recipes)
+
+    const usersList = !isLoaded(users)
+    ? 'Loading'
+    : isEmpty(users)
+      ? 'Todo list is empty'
+      : Object.keys(users).map((key, id) => (
+          <div key={key} id={id}>{users[key].username}</div>
+        ))
+
+
+    const recipesList = !isLoaded(users)
+    ? 'Loading'
+    : isEmpty(recipes)
+      ? 'Todo list is empty'
+      : Object.keys(recipes).map((recipe) => (
+          <div key={recipe}>{recipes[recipe].test}</div>
+        ))
     
     return (
         <React.Fragment>
@@ -84,10 +108,27 @@ const RegisterCard = (props) => {
                         </SFormGroup>
                         <SActionButton type="submit">Register</SActionButton>
                     </form>
+                    {usersList}
+                    <h1>Recipes</h1>
+                    {recipesList}
                 </SCardCustom>
             </SContainer>
         </React.Fragment>
     );
 }
  
-export default withRouter(RegisterCard);
+// export default compose(
+//     firestoreConnect(() => ['users']),
+//     connect((state) => ({
+//         users: state.firestore.data.users
+//     }))
+// )(RegisterCard);
+
+export default compose(
+    withRouter,
+    withFirestore,
+    connect(state => ({
+        users: state.firestore.ordered.users,
+        recipes: state.firestore.ordered.recipes
+    }))
+  )(RegisterCard)

@@ -1,5 +1,6 @@
 import React from "react";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import Navbar from "../components/Navbar";
 import Signup from "./Signup"
@@ -12,6 +13,8 @@ const Home = () => {
       {menu: 'Recipes', url: '/recipes'},
       {menu: 'Sign In', url: '/signin'},
       {menu: 'Sign Up', url: '/signup'},
+      {menu: 'Ahmad Yusuf', url: '/profile'},
+      {menu: 'Logout', url: '/'},
   ]
   return (
     <Router>
@@ -38,5 +41,11 @@ const recipes = () => {
   return<h1>This is recipes page</h1>
 }
 
+const mapStateToProps = (state) => {
+  // console.log(state)
+  return {
 
-export default Home;
+  }
+}
+
+export default connect(mapStateToProps)(Home);
