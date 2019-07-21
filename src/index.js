@@ -6,8 +6,6 @@ import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
 
 import firebase from 'firebase/app'
-import 'firebase/auth'
-import 'firebase/database'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import { createFirestoreInstance, getFirestore, reduxFirestore } from 'redux-firestore'
