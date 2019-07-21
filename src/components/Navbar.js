@@ -36,7 +36,7 @@ const Navbar = (props) => {
                     </SBrand>
                     {(props.menus.length > 0) 
                         ?   <div>{props.menus.map(menu => 
-                                <Link key={menu.menu} style={{color: '#fff', marginLeft: 15}} to={menu.url}>{menu.menu}</Link>
+                                <Link key={menu.url} style={{color: '#fff', marginLeft: 15}} to={menu.url}>{menu.menu}</Link>
                             )}</div>
                         :   <SButton>Logout</SButton>
                     }

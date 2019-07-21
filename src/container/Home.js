@@ -9,19 +9,31 @@ import Signin from "./Signin"
 
 
 
-const Home = () => {
-  const firebase = useSelector(state => state.firebase);
+const Home = ({firebase}) => {
+  const firebaseState = useSelector(state => state.firebase);
   const menuList = [
     {menu: 'Recipes', url: '/recipes'},
     {menu: 'Sign In', url: '/signin'},
     {menu: 'Sign Up', url: '/signup'},
-    {menu: firebase.auth.email, url: '/profile'},
+    {menu: firebaseState.auth.email, url: '/profile'},
     {menu: 'Logout', url: '/'},
   ]
 
+  // console.log(firebase)
+  console.log(firebaseState)
+
+  const logoutHandler = () => {firebase.auth().signOut()
+    .then(() => {
+      console.log('logout success')
+    })
+    .catch((err) => {
+      console.log('logout error', err)
+    })
+  }
+
 
   return (
-    !firebase.auth.isLoaded ? 
+    !firebaseState.auth.isLoaded ? 
     <div>Loading</div>
     : <Router>
         <React.Fragment>
@@ -32,7 +44,8 @@ const Home = () => {
             <Route path='/signin' component={Signin}/>
             <Route path='/signup' component={Signup}/>
           </Switch>
-            {firebase.auth.email}
+            {firebaseState.auth.email}
+          <button onClick={logoutHandler}>Logout</button>
         </React.Fragment>
     </Router>
   );
