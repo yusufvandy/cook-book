@@ -1,6 +1,7 @@
 import React from "react";
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import { connect } from 'react-redux'
+import { useSelector } from 'react-redux'
+import { withFirebase} from 'react-redux-firebase'
 
 import Navbar from "../components/Navbar";
 import Signup from "./Signup"
@@ -8,16 +9,33 @@ import Signin from "./Signin"
 
 
 
-const Home = () => {
+const Home = ({firebase}) => {
+  const firebaseState = useSelector(state => state.firebase);
   const menuList = [
-      {menu: 'Recipes', url: '/recipes'},
-      {menu: 'Sign In', url: '/signin'},
-      {menu: 'Sign Up', url: '/signup'},
-      {menu: 'Ahmad Yusuf', url: '/profile'},
-      {menu: 'Logout', url: '/'},
+    {menu: 'Recipes', url: '/recipes'},
+    {menu: 'Sign In', url: '/signin'},
+    {menu: 'Sign Up', url: '/signup'},
+    {menu: firebaseState.auth.email, url: '/profile'},
+    {menu: 'Logout', url: '/'},
   ]
+
+  // console.log(firebase)
+  console.log(firebaseState)
+
+  const logoutHandler = () => {firebase.auth().signOut()
+    .then(() => {
+      console.log('logout success')
+    })
+    .catch((err) => {
+      console.log('logout error', err)
+    })
+  }
+
+
   return (
-    <Router>
+    !firebaseState.auth.isLoaded ? 
+    <div>Loading</div>
+    : <Router>
         <React.Fragment>
           <Navbar menus={menuList}/>
           <Switch>
@@ -25,9 +43,9 @@ const Home = () => {
             <Route path='/recipes' component={recipes}/>
             <Route path='/signin' component={Signin}/>
             <Route path='/signup' component={Signup}/>
-            {/* <LoginCard user={user} /> */}
-            {/* <button onClick={() => dispatch(createUser({username: 'test2', password: 'test2'}))}>SET</button> */}
           </Switch>
+            {firebaseState.auth.email}
+          <button onClick={logoutHandler}>Logout</button>
         </React.Fragment>
     </Router>
   );
@@ -41,11 +59,5 @@ const recipes = () => {
   return<h1>This is recipes page</h1>
 }
 
-const mapStateToProps = (state) => {
-  // console.log(state)
-  return {
 
-  }
-}
-
-export default connect(mapStateToProps)(Home);
+export default withFirebase(Home);
