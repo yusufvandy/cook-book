@@ -3,12 +3,6 @@ import styled from 'styled-components';
 import {Link} from 'react-router-dom'
 import { SContainer } from '../styles/global'
 
-const SButton = styled.button`
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-`
 const SBrand = styled(Link)`
     font-size: 18px;
     font-weight: bold;
@@ -25,6 +19,10 @@ const SContainerCustom = styled(SContainer)`
     justify-content: space-between;
     align-items: center;
 `
+const SLink = styled(Link)`
+    color: #fff;
+    margin-left: 15px;
+`
 
 const Navbar = (props) => {
     return (
@@ -34,11 +32,18 @@ const Navbar = (props) => {
                     <SBrand to="/">
                         My Cook App
                     </SBrand>
-                    {(props.menus.length > 0) 
-                        ?   <div>{props.menus.map(menu => 
-                                <Link key={menu.url} style={{color: '#fff', marginLeft: 15}} to={menu.url}>{menu.menu}</Link>
-                            )}</div>
-                        :   <SButton>Logout</SButton>
+                    { props.isEmpty ? 
+                        <div>
+                            <SLink to="/recipes">Explore Recipes</SLink>
+                            <SLink to="/signin">Sign In</SLink>
+                            <SLink to="/signup">Sign Up</SLink>
+                        </div>
+                        :
+                        <div>
+                            <SLink to="/recipes">Explore Recipes</SLink>
+                            <SLink to="/profile">{props.email}</SLink>
+                            <SLink to="" onClick={props.logoutHandler}>Logout</SLink>
+                        </div>
                     }
                 </SContainerCustom>
             </SNavbar>
