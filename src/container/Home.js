@@ -13,7 +13,7 @@ const Home = ({firebase}) => {
   const firebaseState = useSelector(state => state.firebase);
 
   // console.log(firebase)
-  // console.log(firebaseState)
+  console.log(firebaseState)
 
   const logoutHandler = () => {firebase.auth().signOut()
     .then(() => {
@@ -26,13 +26,13 @@ const Home = ({firebase}) => {
 
 
   return (
-    !firebaseState.auth.isLoaded ? 
+    firebaseState.profile.isEmpty ? 
     <div>Loading</div>
     : <Router>
         <React.Fragment>
           <Navbar
             isEmpty={firebaseState.auth.isEmpty}
-            email={firebaseState.auth.displayName}
+            photoURL={firebaseState.profile.photoURL}
             logoutHandler={logoutHandler}
           />
           <Switch>

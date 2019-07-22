@@ -23,6 +23,16 @@ const SLink = styled(Link)`
     color: #fff;
     margin-left: 15px;
 `
+const SCircleImg = styled.img`
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    border-radius: 50px;
+`
+const SFlexCenter = styled.div`
+    display: flex;
+    align-items: center
+`
 
 const Navbar = (props) => {
     return (
@@ -33,17 +43,18 @@ const Navbar = (props) => {
                         My Cook App
                     </SBrand>
                     { props.isEmpty ? 
-                        <div>
-                            <SLink to="/recipes">Explore Recipes</SLink>
+                        <SFlexCenter>
+                            <SLink to="/explore">Explore</SLink>
                             <SLink to="/signin">Sign In</SLink>
                             <SLink to="/signup">Sign Up</SLink>
-                        </div>
+                        </SFlexCenter>
                         :
-                        <div>
-                            <SLink to="/recipes">Explore Recipes</SLink>
-                            <SLink to="/profile">{props.email}</SLink>
+                        <SFlexCenter>
+                            <SLink to="/explore">Explore</SLink>
+                            <SLink to="/create-recipe">Create Recipes</SLink>
+                            <SLink to="/profile"><SCircleImg src={props.photoURL} alt=""/></SLink>
                             <SLink to="" onClick={props.logoutHandler}>Logout</SLink>
-                        </div>
+                        </SFlexCenter>
                     }
                 </SContainerCustom>
             </SNavbar>
