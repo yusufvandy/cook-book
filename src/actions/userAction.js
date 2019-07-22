@@ -1,5 +1,5 @@
 export const createUserBak = (user) => {
-    return (dispatch, {getFirestore}) => {
+    return (dispatch, getState, { getFirestore }) => {
         const firestore = getFirestore();
         firestore.collection('users').add({
             ...user
@@ -9,20 +9,34 @@ export const createUserBak = (user) => {
     }
 }
 
-export const createUser = ({username, email, password, firebase, history}) => {
+export const createUser = (user, { firebase, firestore, history }) => {
     return (dispatch) => {
-        let user = null
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then(() => {
-            user = firebase.auth().currentUser;
-            return user.updateProfile({
-                displayName : username
+
+        console.log(firestore)
+
+        firebase.auth().createUserWithEmailAndPassword(
+            user.email, 
+            user.password
+        )
+        .then((resp) => {
+            return firestore.collection('users').doc(resp.user.uid).set({
+                username : user.username,
+                email: user.email,
+                password: user.password,
+                photoURL: user.photoURL
             })
-        }).then(() => {
+        })
+        // .then(() => {
+        //     user = firebase.auth().currentUser;
+        //     return user.updateProfile({
+        //         displayName : username
+        //     })
+        // })
+        .then(() => {
             dispatch({type: 'CREATE_USER', user})
         }).then(() => {
-            history.push('/')
             window.location.reload()
+            history.push('/')
         }).catch((err) => {
             dispatch({type: 'CREATE_USER_ERROR', err})
         })
