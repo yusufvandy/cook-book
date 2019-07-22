@@ -23,8 +23,10 @@ const store = createStore(
         reduxFirestore(fbConfig)
     )
 )
+
 const rrfConfig = {
-    userProfile: 'users'
+    userProfile: 'users',
+    useFirestoreForProfile: true
 }
 
 const rrfProps = {
@@ -33,7 +35,7 @@ const rrfProps = {
     config: rrfConfig,
     dispatch: store.dispatch,
     createFirestoreInstance
-  }
+}
 
 const App = () => (
     <Provider store={store}>
