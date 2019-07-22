@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { compose } from 'redux'
 import { useDispatch, connect } from "react-redux";
 // import { firestoreConnect } from "react-redux-firebase";
-import { withFirestore, isLoaded, isEmpty } from 'react-redux-firebase'
+import { withFirestore, withFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withRouter } from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
@@ -23,7 +23,9 @@ const SCardCustom = styled(SCard)`
     margin-top: 50px;
 `
 
-const RegisterCard = ({props, users, firestore, recipes}) => {
+const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
+    console.log(history)
+
     const dispatch = useDispatch();
     const [user, setUser] = useState({
         username: '',
@@ -41,15 +43,15 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
     }
     
 
-    useEffect(
-        () => {
-            const getUser = async () => {
-                await firestore.onSnapshot('users')
-                await firestore.get({collection:'recipes', doc: 'myfood'})
-            }
-            getUser();
-        }, [firestore]
-    )
+    // useEffect(
+    //     () => {
+    //         const getUser = async () => {
+    //             await firestore.onSnapshot('users')
+    //             await firestore.get({collection:'recipes', doc: 'myfood'})
+    //         }
+    //         getUser();
+    //     }, [firestore]
+    // )
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
@@ -58,10 +60,9 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
         // return to dispatch and display 'account has been created' and then redirect to home after 2 seconds
 
         const {username, email, password} = user
-        dispatch(createUser({username, email, password}))
+        dispatch(createUser({username, email, password, firebase, history}))
     }
-
-    console.log(recipes)
+    const {username, email, password} = user
 
     const usersList = !isLoaded(users)
     ? 'Loading'
@@ -108,9 +109,9 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
                         </SFormGroup>
                         <SActionButton type="submit">Register</SActionButton>
                     </form>
-                    {usersList}
+                    {/* {usersList}
                     <h1>Recipes</h1>
-                    {recipesList}
+                    {recipesList} */}
                 </SCardCustom>
             </SContainer>
         </React.Fragment>
@@ -127,6 +128,7 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
 export default compose(
     withRouter,
     withFirestore,
+    withFirebase,
     connect(state => ({
         users: state.firestore.ordered.users,
         recipes: state.firestore.ordered.recipes
