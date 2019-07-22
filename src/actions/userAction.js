@@ -9,7 +9,7 @@ export const createUserBak = (user) => {
     }
 }
 
-export const createUser = ({username, email, password, firebase}) => {
+export const createUser = ({username, email, password, firebase, history}) => {
     return (dispatch) => {
         let user = null
         firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -19,8 +19,10 @@ export const createUser = ({username, email, password, firebase}) => {
                 displayName : username
             })
         }).then(() => {
-            window.location.reload()
             dispatch({type: 'CREATE_USER', user})
+        }).then(() => {
+            history.push('/')
+            window.location.reload()
         }).catch((err) => {
             dispatch({type: 'CREATE_USER_ERROR', err})
         })
