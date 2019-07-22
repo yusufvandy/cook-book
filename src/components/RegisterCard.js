@@ -2,7 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react'
 import { compose } from 'redux'
-import { useDispatch, connect } from "react-redux";
+import { useDispatch, connect, useSelector } from "react-redux";
+import { Redirect } from 'react-router-dom'
 // import { firestoreConnect } from "react-redux-firebase";
 import { withFirestore, withFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withRouter } from 'react-router-dom'
@@ -24,6 +25,8 @@ const SCardCustom = styled(SCard)`
 `
 
 const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
+    const firebaseState = useSelector(state => state.firebase);
+
     console.log(history)
 
     const dispatch = useDispatch();
@@ -82,7 +85,9 @@ const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
         ))
     
     return (
-        <React.Fragment>
+        firebaseState.auth.uid ? 
+            <Redirect to="/"/>
+        : <React.Fragment>
             <SContainer>
                 <SCardCustom>
                     <STitle>

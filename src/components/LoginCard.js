@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { useState } from 'react'
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useFirebase } from 'react-redux-firebase'
+import { Redirect } from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
 import {signIn} from '../actions/authAction'
@@ -21,8 +22,9 @@ const SCardCustom = styled(SCard)`
 `
 
 
-const LoginCard = (props) => {
+const LoginCard = () => {
     const dispatch = useDispatch()
+    const firebaseState = useSelector(state => state.firebase);
     const [user, setUser] = useState({
         email: '',
         password: ''
@@ -45,6 +47,9 @@ const LoginCard = (props) => {
     }
 
     return (
+        firebaseState.auth.uid ? 
+            <Redirect to="/"/>
+        : 
         <React.Fragment>
             <SContainer>
                 <SCardCustom>
