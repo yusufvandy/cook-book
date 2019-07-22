@@ -27,14 +27,13 @@ const SCardCustom = styled(SCard)`
 const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
     const firebaseState = useSelector(state => state.firebase);
 
-    console.log(history)
-
     const dispatch = useDispatch();
     const [user, setUser] = useState({
         username: '',
         email: '',
         password: '',
-        retypePassword: ''
+        retypePassword: '',
+        photoURL: 'https://avatars0.githubusercontent.com/u/25471957?s=460&v=4'
     })
     
     const inputHandler = (e) => {
@@ -62,8 +61,8 @@ const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
         // return error if double username
         // return to dispatch and display 'account has been created' and then redirect to home after 2 seconds
 
-        const {username, email, password} = user
-        dispatch(createUser({username, email, password, firebase, history}))
+        const {retypePassword, ...newUser} = user
+        dispatch(createUser(newUser, { firebase, firestore, history }))
     }
     const {username, email, password} = user
 
