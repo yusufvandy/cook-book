@@ -82,6 +82,11 @@ const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
       : Object.keys(recipes).map((recipe) => (
           <div key={recipe}>{recipes[recipe].test}</div>
         ))
+
+    const passwordValidation = 
+        (user.password === user.retypePassword && user.password !== '')
+        ? <label style={{marginTop: 5, color: 'green'}}>Password is correct</label>
+        : <label style={{marginTop: 5, color: 'red'}}>Wrong password, please retype password</label>
     
     return (
         firebaseState.auth.uid ? 
@@ -108,8 +113,7 @@ const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
                         <SFormGroup>
                             <label htmlFor="">Retype Password</label>
                             <input type="password" name="retypePassword" onChange={(e) => inputHandler(e)}/>
-                            {(user.password === user.retypePassword && user.password !== '') ? <label style={{marginTop: 5, color: 'green'}}>Password is correct</label> : 
-                            <label style={{marginTop: 5, color: 'red'}}>Wrong password, please retype password</label>}
+                            {passwordValidation}
                         </SFormGroup>
                         <SActionButton type="submit">Register</SActionButton>
                     </form>
