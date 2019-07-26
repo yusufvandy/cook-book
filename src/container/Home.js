@@ -1,19 +1,63 @@
-import React from "react";
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import { withFirebase} from 'react-redux-firebase'
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { compose } from 'redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { withFirebase, withFirestore } from 'react-redux-firebase'
 
+import { SContainer } from '../styles/global'
+import { edamamConfig } from '../config/edamam'
+import { crawlRecipes } from '../actions/recipeAction'
 import Navbar from "../components/Navbar";
 import Signup from "./Signup"
 import Signin from "./Signin"
 
 
 
-const Home = ({firebase}) => {
+const Home = ({firebase, firestore}) => {
   const firebaseState = useSelector(state => state.firebase);
+  const [recipes, setRecipes] = useState(
+    {
+      label: 'asd',
+      calories: 12323,
+      ingredients: [
+        {text: 'makan', num: 1123},
+        {text: 'makan2', num: 11223},
+        {text: 'makan3', num: 11213},
+        {text: 'makan4', num: 11223},
+      ],
+      uri: 'bebas.com',
+      image: 'caca.com'
+    });
+  const dispatch = useDispatch()
+
+  const URL = `https://api.edamam.com/search?q=chicken&app_id=${edamamConfig.APP_ID}&app_key=${edamamConfig.APP_KEY}&from=0&to=25`;
+
+  useEffect(
+    () => {
+      const getRecipes = async () => {
+        // const res = await fetch(URL);
+        // const data = await res.json()
+        // const recipes = data.hits.recipe
+        // console.log(recipes)
+        // setRecipes(data.hits)
+        dispatch(crawlRecipes(recipes, { firestore }))
+      }
+
+      // const mapped = recipes.map((recipe) => {
+      //   return recipe
+      // })
+      // const newRecipes = recipes.map((obj)=> {return Object.assign({}, obj)});
+
+
+      // console.log(newRecipes)
+      console.log(recipes, 'recipes')
+      
+      getRecipes()
+    }, [URL, dispatch, firestore, recipes]
+  )
 
   // console.log(firebase)
-  console.log(firebaseState)
+  // console.log(firebaseState)
 
   const logoutHandler = () => {firebase.auth().signOut()
     .then(() => {
@@ -24,6 +68,15 @@ const Home = ({firebase}) => {
     })
   }
 
+  const homepage = () => {
+    return (
+      <SContainer>
+        <h1>All chicken recipes</h1>
+        <div>ad</div>
+      </SContainer>
+    )
+  }
+  
 
   return (
     firebaseState.profile.isEmpty ? 
@@ -36,8 +89,8 @@ const Home = ({firebase}) => {
             logoutHandler={logoutHandler}
           />
           <Switch>
-            <Route path='/' exact component={home}/>
-            <Route path='/recipes' component={recipes}/>
+            <Route path='/' exact component={homepage}/>
+            <Route path='/recipes' component={recipesPage}/>
             <Route path='/signin' component={Signin}/>
             <Route path='/signup' component={Signup}/>
           </Switch>
@@ -46,13 +99,12 @@ const Home = ({firebase}) => {
   );
 };
 
-const home = () => {
-  return<h1>This is HOME page</h1>
-}
-
-const recipes = () => {
+const recipesPage = () => {
   return<h1>This is recipes page</h1>
 }
 
 
-export default withFirebase(Home);
+export default compose(
+  withFirebase,
+  withFirestore
+)(Home);
