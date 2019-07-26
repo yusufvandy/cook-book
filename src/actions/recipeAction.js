@@ -1,15 +1,16 @@
-export const createUserBak = (user) => {
-    return (dispatch, getState, { getFirestore }) => {
-        const firestore = getFirestore();
-        firestore.collection('users').add({
-            ...user
-        }).then(() => {
-            dispatch({type: 'CREATE_USER', user})
-        });
+export const crawlRecipes = (data, { firestore }) => {
+    return (dispatch) => {
+        firestore.collection('recipes').add(data)
+        // .then(() => {
+        //     dispatch({type: 'CRAWL_RECIPES', recipes})
+        // }).catch((err) => {
+        //     dispatch({type: 'CRAWL_RECIPES_ERROR', err})
+        // })
+        // console.log(firestore.collection('recipes'))
     }
 }
 
-export const createUser = (user, { firebase, firestore, history }) => {
+export const crawlRecipea = (user, { firebase, firestore, history }) => {
     return (dispatch) => {
 
         firebase.auth().createUserWithEmailAndPassword(
