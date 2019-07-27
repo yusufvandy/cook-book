@@ -43,7 +43,7 @@ const LoginCard = () => {
     const onSubmitHandler = (e) => {
         e.preventDefault();
         console.log(user)
-        dispatch(signIn(user, {firebase}))
+        // dispatch(signIn(user, {firebase}))
     }
 
     return (
