@@ -6,7 +6,7 @@ import { useFirebase } from 'react-redux-firebase'
 import { Redirect } from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
-import {signIn} from '../actions/authAction'
+import {signIn} from '../store/actions/authAction'
 
 const STitle = styled.h1`
     font-size: 20px;

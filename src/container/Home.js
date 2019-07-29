@@ -6,7 +6,7 @@ import { withFirebase, withFirestore } from 'react-redux-firebase'
 
 import { SContainer } from '../styles/global'
 import { edamamConfig } from '../config/edamam'
-import { crawlRecipes } from '../actions/recipeAction'
+import { crawlRecipes } from '../store/actions/recipeAction'
 import Navbar from "../components/Navbar";
 import Signup from "./Signup"
 import Signin from "./Signin"
@@ -15,32 +15,7 @@ import Signin from "./Signin"
 
 const Home = ({firebase, firestore}) => {
   const firebaseState = useSelector(state => state.firebase);
-  const [recipes, setRecipes] = useState([
-  // {
-  //   label: 'Chicken Mustard',
-  //   calories: 12323,
-  //   ingredients: [
-  //     {text: 'makan', num: 1123},
-  //     {text: 'makan2', num: 11223},
-  //     {text: 'makan3', num: 11213},
-  //     {text: 'makan4', num: 11223},
-  //   ],
-  //   uri: 'bebas.com',
-  //   image: 'caca.com'
-  // },{
-  //   label: 'Chicken Mustardo jo',
-  //   calories: 12323,
-  //   ingredients: [
-  //     {text: 'makan', num: 1123},
-  //     {text: 'makan2', num: 11223},
-  //     {text: 'makan3', num: 11213},
-  //     {text: 'makan4', num: 11223},
-  //   ],
-  //   uri: 'bebas.com',
-  //   image: 'caca.com'
-  // }
-  null
-  ]);
+  const [recipes, setRecipes] = useState([null]);
 
   const dispatch = useDispatch()
 
@@ -49,29 +24,20 @@ const Home = ({firebase, firestore}) => {
   useEffect(
     () => {
       const getRecipes = async () => {
-        const res = await fetch(URL);
-        const data = await res.json()
-        // const recipes = data.hits.recipe
-        // console.log(recipes)
-        setRecipes(data.hits)
+        // fetch from edamam api
+        // const res = await fetch(URL);
+        // const data = await res.json()
+        // setRecipes(data.hits)
         // dispatch(crawlRecipes(recipes, { firestore }))
-        console.log(data)
+        await firestore.collection('recipes').get()
+        .then((res) => {
+          console.log(res)
+          setRecipes(res)
+        })
       }
-
-      // const mapped = recipes.map((recipe) => {
-      //   return recipe
-      // })
-      // const newRecipes = recipes.map((obj)=> {return Object.assign({}, obj)});
-
-
-      // console.log(newRecipes)
-      
       getRecipes()
     }, []
   )
-
-  // console.log(firebase)
-  console.log(firebase)
 
   const logoutHandler = () => {firebase.auth().signOut()
     .then(() => {
@@ -93,12 +59,15 @@ const Home = ({firebase, firestore}) => {
         <div>
           <h1>All chicken recipes</h1>
           <div>
-            {recipes !== null ? recipes.map((recipe) => {
-              return (
-                <div style={{border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipe.recipe.label} 
-                <button onClick={() => exportHandler(recipe)}>export</button></div>
-              )}
-            ) : <div>empty</div>}
+            {recipes == null ? 
+              recipes.map((recipe) => {
+                return (
+                  <div style={{border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipe.recipe.label} 
+                  <button onClick={() => exportHandler(recipe)}>export</button></div>
+                )}
+              )
+              : <div>Empty</div>
+            }
           </div>
         </div>
       </SContainer>

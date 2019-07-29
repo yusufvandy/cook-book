@@ -9,7 +9,7 @@ import { withFirestore, withFirebase, isLoaded, isEmpty } from 'react-redux-fire
 import { withRouter } from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
-import {createUser} from '../actions/userAction'
+import {createUser} from '../store/actions/userAction'
 
 const STitle = styled.h1`
     font-size: 20px;
