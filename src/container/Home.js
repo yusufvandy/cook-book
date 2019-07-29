@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { compose } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
-import { withFirebase, withFirestore } from 'react-redux-firebase'
+import { withFirebase, withFirestore, firestoreConnect } from 'react-redux-firebase'
 
 import { SContainer } from '../styles/global'
 import { edamamConfig } from '../config/edamam'
@@ -15,29 +15,28 @@ import Signin from "./Signin"
 
 const Home = ({firebase, firestore}) => {
   const firebaseState = useSelector(state => state.firebase);
-  const [recipes, setRecipes] = useState([null]);
+  // const [recipes, setRecipes] = useState([null]);
+  const recipes = useSelector(state => state.firestore.data.recipes)
 
   const dispatch = useDispatch()
 
   const URL = `https://api.edamam.com/search?q=chicken&app_id=${edamamConfig.APP_ID}&app_key=${edamamConfig.APP_KEY}&from=0&to=25`;
 
-  useEffect(
-    () => {
-      const getRecipes = async () => {
-        // fetch from edamam api
-        // const res = await fetch(URL);
-        // const data = await res.json()
-        // setRecipes(data.hits)
-        // dispatch(crawlRecipes(recipes, { firestore }))
-        await firestore.collection('recipes').get()
-        .then((res) => {
-          console.log(res)
-          setRecipes(res)
-        })
-      }
-      getRecipes()
-    }, []
-  )
+  // useEffect(
+  //   () => {
+  //     const getRecipes = async () => {
+  //       // fetch from edamam api
+  //       // const res = await fetch(URL);
+  //       // const data = await res.json()
+  //       // setRecipes(data.hits)
+  //       // dispatch(crawlRecipes(recipes, { firestore }))
+  //       // await firestore.collection('recipes').get()
+  //     }
+  //     getRecipes()
+  //   }, []
+  // )
+
+  console.log(recipes)
 
   const logoutHandler = () => {firebase.auth().signOut()
     .then(() => {
@@ -58,17 +57,12 @@ const Home = ({firebase, firestore}) => {
       <SContainer>
         <div>
           <h1>All chicken recipes</h1>
-          <div>
-            {recipes == null ? 
-              recipes.map((recipe) => {
-                return (
-                  <div style={{border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipe.recipe.label} 
-                  <button onClick={() => exportHandler(recipe)}>export</button></div>
-                )}
-              )
-              : <div>Empty</div>
-            }
-          </div>
+          {recipes === undefined
+            ? 'Loading'
+            : Object.keys(recipes).map((key) => (
+                <div key={key} style={{border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipes[key].recipe.label}</div>
+              ))
+          }
         </div>
       </SContainer>
     )
@@ -106,5 +100,8 @@ const Home = ({firebase, firestore}) => {
 
 export default compose(
   withFirebase,
-  withFirestore
+  withFirestore,
+  firestoreConnect([
+    {collection: 'recipes'}
+  ])
 )(Home);
