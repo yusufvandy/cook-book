@@ -1,47 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { compose } from 'redux'
-import { useSelector, useDispatch } from 'react-redux'
-import { withFirestore, firestoreConnect } from 'react-redux-firebase'
+import { useSelector } from 'react-redux'
+import { firestoreConnect } from 'react-redux-firebase'
 
 import { SContainer } from '../styles/global'
-import { edamamConfig } from '../config/edamam'
-import { crawlRecipes } from '../store/actions/recipeAction'
 import Navbar from "../components/Navbar";
 import Signup from "./Signup"
 import Signin from "./Signin"
 
 
 
-const Home = ({ firestore }) => {
+const Home = () => {
   const firebaseState = useSelector(state => state.firebase);
-  // const [recipes, setRecipes] = useState([null]);
   const recipes = useSelector(state => state.firestore.data.recipes)
-
-  const dispatch = useDispatch()
-
-  const URL = `https://api.edamam.com/search?q=chicken&app_id=${edamamConfig.APP_ID}&app_key=${edamamConfig.APP_KEY}&from=0&to=25`;
-
-  // useEffect(
-  //   () => {
-  //     const getRecipes = async () => {
-  //       // fetch from edamam api
-  //       // const res = await fetch(URL);
-  //       // const data = await res.json()
-  //       // setRecipes(data.hits)
-  //       // dispatch(crawlRecipes(recipes, { firestore }))
-  //       // await firestore.collection('recipes').get()
-  //     }
-  //     getRecipes()
-  //   }, []
-  // )
-
-  console.log(recipes)
-
-  const exportHandler = (recipe) => {
-    console.log(recipe)
-    dispatch(crawlRecipes(recipe, { firestore }))
-  }
 
   const homepage = () => {
     return (
@@ -88,7 +60,6 @@ const Home = ({ firestore }) => {
 
 
 export default compose(
-  withFirestore,
   firestoreConnect([
     {collection: 'recipes'}
   ])
