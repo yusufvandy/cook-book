@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Home from './container/Home';
-import NewHome from './NewHome';
+import Home from './pages/Home';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux'
 

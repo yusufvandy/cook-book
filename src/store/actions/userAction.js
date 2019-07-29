@@ -1,14 +1,3 @@
-export const createUserBak = (user) => {
-    return (dispatch, getState, { getFirestore }) => {
-        const firestore = getFirestore();
-        firestore.collection('users').add({
-            ...user
-        }).then(() => {
-            dispatch({type: 'CREATE_USER', user})
-        });
-    }
-}
-
 export const createUser = (user, { firebase, firestore, history }) => {
     return (dispatch) => {
 
@@ -24,12 +13,6 @@ export const createUser = (user, { firebase, firestore, history }) => {
                 photoURL: user.photoURL
             })
         })
-        // .then(() => {
-        //     user = firebase.auth().currentUser;
-        //     return user.updateProfile({
-        //         displayName : username
-        //     })
-        // })
         .then(() => {
             dispatch({type: 'CREATE_USER', user})
         }).then(() => {
