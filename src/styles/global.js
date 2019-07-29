@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
 export const SContainer = styled.div`
-max-width: 1140px;
-margin: auto;
-padding: 0 15px;
+    max-width: 1140px;
+    margin: auto;
+    padding: 0 15px;
 `
 
 export const SCard = styled.div`
