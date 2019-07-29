@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { compose } from 'redux'
 import { useSelector, useDispatch } from 'react-redux'
-import { withFirebase, withFirestore, firestoreConnect } from 'react-redux-firebase'
+import { withFirestore, firestoreConnect } from 'react-redux-firebase'
 
 import { SContainer } from '../styles/global'
 import { edamamConfig } from '../config/edamam'
@@ -13,7 +13,7 @@ import Signin from "./Signin"
 
 
 
-const Home = ({firebase, firestore}) => {
+const Home = ({ firestore }) => {
   const firebaseState = useSelector(state => state.firebase);
   // const [recipes, setRecipes] = useState([null]);
   const recipes = useSelector(state => state.firestore.data.recipes)
@@ -38,15 +38,6 @@ const Home = ({firebase, firestore}) => {
 
   console.log(recipes)
 
-  const logoutHandler = () => {firebase.auth().signOut()
-    .then(() => {
-      console.log('logout success')
-    })
-    .catch((err) => {
-      console.log('logout error', err)
-    })
-  }
-
   const exportHandler = (recipe) => {
     console.log(recipe)
     dispatch(crawlRecipes(recipe, { firestore }))
@@ -57,12 +48,14 @@ const Home = ({firebase, firestore}) => {
       <SContainer>
         <div>
           <h1>All chicken recipes</h1>
-          {recipes === undefined
+          <div style={{display: 'flex', flexWrap: 'wrap', margin: '0 -15px'}}>
+          {recipes === undefined || null
             ? 'Loading'
             : Object.keys(recipes).map((key) => (
-                <div key={key} style={{border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipes[key].recipe.label}</div>
+                <div key={key} style={{flex: '0 0 calc(22% - 30px)', margin: '0 15px', border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipes[key].recipe.label}</div>
               ))
           }
+          </div>
         </div>
       </SContainer>
     )
@@ -81,11 +74,7 @@ const Home = ({firebase, firestore}) => {
     <div>Loading</div>
     : <Router>
         <React.Fragment>
-          <Navbar
-            isEmpty={firebaseState.auth.isEmpty}
-            photoURL={firebaseState.profile.photoURL}
-            logoutHandler={logoutHandler}
-          />
+          <Navbar />
           <Switch>
             <Route path='/' exact component={homepage}/>
             <Route path='/recipes' component={recipesPage}/>
@@ -99,7 +88,6 @@ const Home = ({firebase, firestore}) => {
 
 
 export default compose(
-  withFirebase,
   withFirestore,
   firestoreConnect([
     {collection: 'recipes'}
