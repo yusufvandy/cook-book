@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { withFirebase } from 'react-redux-firebase'
+
 import { SContainer } from '../styles/global'
 
 const SBrand = styled(Link)`
@@ -31,10 +34,22 @@ const SCircleImg = styled.img`
 `
 const SFlexCenter = styled.div`
     display: flex;
-    align-items: center
+    align-items: center;
 `
 
-const Navbar = (props) => {
+const Navbar = ({ firebase }) => {
+    const firebaseState = useSelector(state => state.firebase);
+
+    const logoutHandler = () => {
+        firebase.auth().signOut()
+        .then(() => {
+          console.log('logout success')
+        })
+        .catch((err) => {
+          console.log('logout error', err)
+        })
+    }
+    
     return (
         <React.Fragment>
             <SNavbar>
@@ -42,7 +57,7 @@ const Navbar = (props) => {
                     <SBrand to="/">
                         My Cook App
                     </SBrand>
-                    { props.isEmpty ? 
+                    { firebaseState.auth.isEmpty ? 
                         <SFlexCenter>
                             <SLink to="/explore">Explore</SLink>
                             <SLink to="/signin">Sign In</SLink>
@@ -52,8 +67,8 @@ const Navbar = (props) => {
                         <SFlexCenter>
                             <SLink to="/explore">Explore</SLink>
                             <SLink to="/create-recipe">Create Recipes</SLink>
-                            <SLink to="/profile"><SCircleImg src={props.photoURL} alt=""/></SLink>
-                            <SLink to="" onClick={props.logoutHandler}>Logout</SLink>
+                            <SLink to="/profile"><SCircleImg src={firebaseState.profile.photoURL} alt=""/></SLink>
+                            <SLink to="" onClick={ logoutHandler }>Logout</SLink>
                         </SFlexCenter>
                     }
                 </SContainerCustom>
@@ -62,4 +77,4 @@ const Navbar = (props) => {
     );
 }
  
-export default Navbar;
+export default withFirebase(Navbar);
