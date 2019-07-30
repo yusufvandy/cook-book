@@ -1,6 +1,5 @@
 import React, { useState, useEffect }  from 'react'
 import { edamamConfig } from '../config/edamam'
-import { exportRecipes } from '../store/actions/recipeAction'
 import { withFirestore } from 'react-redux-firebase'
 
 const Crawler = ({ firestore }) => {
@@ -13,7 +12,14 @@ const Crawler = ({ firestore }) => {
             // fetch from edamam api
             const res = await fetch(URL);
             const data = await res.json()
-            await setRecipes(data.hits)
+            const raw = await data.hits
+            await setRecipes(raw.map(
+                (recipe) => {
+                    recipe.recipe.bookmarked = recipe.bookmarked;
+                    recipe.recipe.bought = recipe.bought;
+                    return recipe.recipe
+                }
+            ))
         }
 
         getRecipes()
@@ -21,7 +27,7 @@ const Crawler = ({ firestore }) => {
     )
 
     const exportHandler = (recipe) => {
-      firestore.collection('recipes').add(recipe)
+      firestore.collection('recipes').add(recipe).then(console.log('recipe added: ', recipe))
     }
 
     console.log(recipes)
@@ -30,7 +36,7 @@ const Crawler = ({ firestore }) => {
     return ( 
         <div>
             {recipes.map((recipe, index) => (
-                    <div key={index}>{recipe.recipe.label} <button onClick={() => exportHandler(recipe)}>export</button></div>
+                    <div key={index}>{recipe.label} <button onClick={() => exportHandler(recipe)}>export</button></div>
                  ))
             }
         </div>
