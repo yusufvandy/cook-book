@@ -6,6 +6,7 @@ import { firestoreConnect } from 'react-redux-firebase'
 
 import { SContainer } from '../styles/global'
 import Navbar from "../components/Navbar";
+import Card from "../components/Card"
 // import Crawler from '../components/Crawler'
 import Signup from "./Signup"
 import Signin from "./Signin"
@@ -21,16 +22,21 @@ const Home = () => {
     return (
       <SContainer>
         <div>
-          <h1>All chicken recipes</h1>
+          <h1>All recipes</h1>
           <div style={{display: 'flex', flexWrap: 'wrap', margin: '0 -15px'}}>
           {recipes == undefined || null
-            ? <div style={{margin: '0 15px'}}>Loading</div>
-            : Object.keys(recipes).map((key) => (
-                <div key={key} style={{flex: '0 0 calc(22% - 30px)', margin: '0 15px', border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipes[key].recipe.label}</div>
+            ? <div style={{margin: '0 15px'}}>No Recipes Available</div>
+            : Object.keys(recipes).map((keyID) => (
+                <Card 
+                  key={keyID}
+                  keyID={keyID}
+                  recipes={recipes}
+                />
+                // <div key={key} style={{flex: '0 0 calc(22% - 30px)', margin: '0 15px', border: '1px #ccc solid', marginBottom: 25, padding: 15}}>{recipes[key].label}</div>
               ))
           }
           </div>
-          <Crawler />
+          {/* <Crawler /> */}
         </div>
       </SContainer>
     )
@@ -66,6 +72,13 @@ export default compose(
   firestoreConnect([
     {
       collection: 'recipes',
+      limit: 3
+      // where: [
+      //   ['label', '<=', 'Chicken'],
+      //   ['label', '>=', 'Chicken']
+      // ],
+      // storeAs: 'chicken_recipes',
+      // limit: 10
       // docs: recipesId,
       // subcollections: [
       //   { collection: 'recipe',
@@ -74,10 +87,6 @@ export default compose(
       //     ]
       //   }
       // ],
-      // where: [
-      //   ['label', 'array-contains', 'chicken']
-      // ],
-      // storeAs: 'chicken_recipes'
     }
   ])
 )(Home);

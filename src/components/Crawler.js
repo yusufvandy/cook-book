@@ -4,7 +4,7 @@ import { withFirestore } from 'react-redux-firebase'
 
 const Crawler = ({ firestore }) => {
     const [recipes, setRecipes] = useState([ ])
-    const searchQuery = 'fish'
+    const searchQuery = 'vegetables'
 
     useEffect(
         () => {
