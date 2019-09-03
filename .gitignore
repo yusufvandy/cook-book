@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 keyFirebase.js
+edamam.js
 
 # testing
 /coverage

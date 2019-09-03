@@ -2,13 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import { useState, useEffect } from 'react'
 import { compose } from 'redux'
-import { useDispatch, connect } from "react-redux";
+import { useDispatch, connect, useSelector } from "react-redux";
+import { Redirect } from 'react-router-dom'
 // import { firestoreConnect } from "react-redux-firebase";
-import { withFirestore, isLoaded, isEmpty } from 'react-redux-firebase'
+import { withFirestore, withFirebase, isLoaded, isEmpty } from 'react-redux-firebase'
 import { withRouter } from 'react-router-dom'
 
 import { SContainer, SCard, SActionButton, SFormGroup } from '../styles/global'
-import {createUser} from '../actions/userAction'
+import {createUser} from '../store/actions/userAction'
 
 const STitle = styled.h1`
     font-size: 20px;
@@ -23,13 +24,16 @@ const SCardCustom = styled(SCard)`
     margin-top: 50px;
 `
 
-const RegisterCard = ({props, users, firestore, recipes}) => {
+const RegisterCard = ({history, users, firestore, recipes, firebase}) => {
+    const firebaseState = useSelector(state => state.firebase);
+
     const dispatch = useDispatch();
     const [user, setUser] = useState({
         username: '',
         email: '',
         password: '',
-        retypePassword: ''
+        retypePassword: '',
+        photoURL: 'https://avatars0.githubusercontent.com/u/25471957?s=460&v=4'
     })
     
     const inputHandler = (e) => {
@@ -41,15 +45,15 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
     }
     
 
-    useEffect(
-        () => {
-            const getUser = async () => {
-                await firestore.onSnapshot('users')
-                await firestore.get({collection:'recipes', doc: 'myfood'})
-            }
-            getUser();
-        }, [firestore]
-    )
+    // useEffect(
+    //     () => {
+    //         const getUser = async () => {
+    //             await firestore.onSnapshot('users')
+    //             await firestore.get({collection:'recipes', doc: 'myfood'})
+    //         }
+    //         getUser();
+    //     }, [firestore]
+    // )
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
@@ -57,11 +61,10 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
         // return error if double username
         // return to dispatch and display 'account has been created' and then redirect to home after 2 seconds
 
-        const {username, email, password} = user
-        dispatch(createUser({username, email, password}))
+        const {retypePassword, ...newUser} = user
+        dispatch(createUser(newUser, { firebase, firestore, history }))
     }
-
-    console.log(recipes)
+    const {username, email, password} = user
 
     const usersList = !isLoaded(users)
     ? 'Loading'
@@ -79,9 +82,16 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
       : Object.keys(recipes).map((recipe) => (
           <div key={recipe}>{recipes[recipe].test}</div>
         ))
+
+    const passwordValidation = 
+        (user.password === user.retypePassword && user.password !== '')
+        ? <label style={{marginTop: 5, color: 'green'}}>Password is correct</label>
+        : <label style={{marginTop: 5, color: 'red'}}>Wrong password, please retype password</label>
     
     return (
-        <React.Fragment>
+        firebaseState.auth.uid ? 
+            <Redirect to="/"/>
+        : <React.Fragment>
             <SContainer>
                 <SCardCustom>
                     <STitle>
@@ -103,14 +113,13 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
                         <SFormGroup>
                             <label htmlFor="">Retype Password</label>
                             <input type="password" name="retypePassword" onChange={(e) => inputHandler(e)}/>
-                            {(user.password === user.retypePassword && user.password !== '') ? <label style={{marginTop: 5, color: 'green'}}>Password is correct</label> : 
-                            <label style={{marginTop: 5, color: 'red'}}>Wrong password, please retype password</label>}
+                            {passwordValidation}
                         </SFormGroup>
                         <SActionButton type="submit">Register</SActionButton>
                     </form>
-                    {usersList}
+                    {/* {usersList}
                     <h1>Recipes</h1>
-                    {recipesList}
+                    {recipesList} */}
                 </SCardCustom>
             </SContainer>
         </React.Fragment>
@@ -127,6 +136,7 @@ const RegisterCard = ({props, users, firestore, recipes}) => {
 export default compose(
     withRouter,
     withFirestore,
+    withFirebase,
     connect(state => ({
         users: state.firestore.ordered.users,
         recipes: state.firestore.ordered.recipes

@@ -1,32 +1,23 @@
 import React from 'react';
-import styled from 'styled-components';
-import {Link} from 'react-router-dom'
-import { SContainer } from '../styles/global'
+import { useSelector } from 'react-redux'
+import { withFirebase } from 'react-redux-firebase'
 
-const SButton = styled.button`
-    border: none;
-    border-radius: 10px;
-    padding: 10px;
-    cursor: pointer;
-`
-const SBrand = styled(Link)`
-    font-size: 18px;
-    font-weight: bold;
-    color: #fff;
-`
-const SNavbar = styled.div`
-    background-image: linear-gradient(to right, #ff758c 0%, #ff7eb3 100%);
-    width: 100%;
-    color: white;
-    padding: 15px 0;
-`
-const SContainerCustom = styled(SContainer)`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-`
+import { SBrand, SNavbar, SContainerCustom, SLink, SCircleImg, SFlexCenter } from './NavbarCss'
 
-const Navbar = (props) => {
+
+const Navbar = ({ firebase }) => {
+    const firebaseState = useSelector(state => state.firebase);
+
+    const logoutHandler = () => {
+        firebase.auth().signOut()
+        .then(() => {
+          console.log('logout success')
+        })
+        .catch((err) => {
+          console.log('logout error', err)
+        })
+    }
+    
     return (
         <React.Fragment>
             <SNavbar>
@@ -34,11 +25,19 @@ const Navbar = (props) => {
                     <SBrand to="/">
                         My Cook App
                     </SBrand>
-                    {(props.menus.length > 0) 
-                        ?   <div>{props.menus.map(menu => 
-                                <Link key={menu.url} style={{color: '#fff', marginLeft: 15}} to={menu.url}>{menu.menu}</Link>
-                            )}</div>
-                        :   <SButton>Logout</SButton>
+                    { firebaseState.auth.isEmpty ? 
+                        <SFlexCenter>
+                            <SLink to="/explore">Explore</SLink>
+                            <SLink to="/signin">Sign In</SLink>
+                            <SLink to="/signup">Sign Up</SLink>
+                        </SFlexCenter>
+                        :
+                        <SFlexCenter>
+                            <SLink to="/explore">Explore</SLink>
+                            <SLink to="/create-recipe">Create Recipes</SLink>
+                            <SLink to="/profile"><SCircleImg src={firebaseState.profile.photoURL} alt=""/></SLink>
+                            <SLink to="" onClick={ logoutHandler }>Logout</SLink>
+                        </SFlexCenter>
                     }
                 </SContainerCustom>
             </SNavbar>
@@ -46,4 +45,4 @@ const Navbar = (props) => {
     );
 }
  
-export default Navbar;
+export default withFirebase(Navbar);
